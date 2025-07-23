@@ -3,8 +3,8 @@
 
 export const config = {
   azure: {
-    endpoint: process.env.AZURE_COMPUTER_VISION_ENDPOINT!,
-    key: process.env.AZURE_COMPUTER_VISION_KEY!,
+    endpoint: process.env.AZURE_COMPUTER_VISION_ENDPOINT || process.env.NEXT_PUBLIC_AZURE_COMPUTER_VISION_ENDPOINT,
+    key: process.env.AZURE_COMPUTER_VISION_KEY || process.env.NEXT_PUBLIC_AZURE_COMPUTER_VISION_KEY,
   },
   app: {
     environment: process.env.NEXT_PUBLIC_APP_ENV || 'development',
