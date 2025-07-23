@@ -5,12 +5,12 @@ const nextConfig: NextConfig = {
   experimental: {
     // Enable service worker for PWA
   },
-  // Static export for Azure Static Web Apps
-  output: 'export',
+  // Remove static export to enable API routes
+  // output: 'export', // Disabled for Azure Static Web Apps with API support
   trailingSlash: true,
   // Optimize for mobile
   images: {
-    unoptimized: true, // Required for static export
+    unoptimized: true, // Required for Azure Static Web Apps
     formats: ['image/webp', 'image/avif'],
   },
   // Security headers

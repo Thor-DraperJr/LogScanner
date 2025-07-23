@@ -14,10 +14,15 @@ export const config = {
 // Runtime validation
 export function validateConfig() {
   if (!config.azure.endpoint || !config.azure.key) {
-    throw new Error('Missing Azure Computer Vision credentials. Please check your .env.local file.');
+    console.error('Azure credentials missing:', {
+      endpoint: !!config.azure.endpoint,
+      key: !!config.azure.key
+    });
+    throw new Error('Missing Azure Computer Vision credentials. Please check your environment variables.');
   }
   
-  if (!config.azure.endpoint.includes('cognitiveservices.azure.com')) {
+  if (!config.azure.endpoint.includes('api.cognitive.microsoft.com')) {
+    console.error('Invalid endpoint format:', config.azure.endpoint);
     throw new Error('Invalid Azure Computer Vision endpoint format.');
   }
   

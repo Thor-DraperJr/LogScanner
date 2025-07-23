@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, Download, Loader2 } from 'lucide-react';
-import { processImageOCR, parseLogbookData } from '@/lib/azure-ocr';
+import { parseLogbookData } from '@/lib/azure-ocr';
 import { generateCSV, downloadCSV, validateLogbookEntries } from '@/lib/csv-export';
 import type { FlightLogEntry } from '@/types/logbook';
 
@@ -22,7 +22,20 @@ export default function DataReview({ imageData, onDataConfirm, onBack }: DataRev
     setError(null);
 
     try {
-      const ocrResult = await processImageOCR(imageData);
+      // Call the API route instead of direct Azure OCR
+      const response = await fetch('/api/ocr', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageData }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`OCR request failed: ${response.statusText}`);
+      }
+
+      const ocrResult = await response.json();
       
       if (ocrResult.error) {
         setError(ocrResult.error);
