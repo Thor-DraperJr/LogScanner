@@ -1,16 +1,16 @@
 // Azure Computer Vision OCR integration for LogScanner MVP
 
-import { config, validateConfig } from './config';
+import { azureConfig, validateAzureConfig } from './azure-config';
 import type { OCRResponse, OCRResult } from '@/types/logbook';
 
 // Initialize Azure Computer Vision client
 async function initializeOCRClient() {
-  validateConfig();
+  validateAzureConfig();
   
   // Use REST API approach for better browser compatibility
   return {
-    endpoint: config.azure.endpoint,
-    key: config.azure.key,
+    endpoint: azureConfig.endpoint,
+    key: azureConfig.key,
   };
 }
 
