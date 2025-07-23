@@ -13,6 +13,16 @@ export const config = {
 
 // Runtime validation
 export function validateConfig() {
+  console.log('Environment check:', {
+    serverEndpoint: process.env.AZURE_COMPUTER_VISION_ENDPOINT,
+    publicEndpoint: process.env.NEXT_PUBLIC_AZURE_COMPUTER_VISION_ENDPOINT,
+    serverKey: process.env.AZURE_COMPUTER_VISION_KEY ? 'SET' : 'NOT_SET',
+    publicKey: process.env.NEXT_PUBLIC_AZURE_COMPUTER_VISION_KEY ? 'SET' : 'NOT_SET',
+    finalEndpoint: config.azure.endpoint,
+    finalKey: config.azure.key ? 'SET' : 'NOT_SET',
+    allEnvKeys: typeof window === 'undefined' ? Object.keys(process.env).filter(k => k.includes('AZURE')) : 'CLIENT_SIDE'
+  });
+
   if (!config.azure.endpoint || !config.azure.key) {
     console.error('Azure credentials missing:', {
       endpoint: !!config.azure.endpoint,
