@@ -1,0 +1,32 @@
+{
+  "name": "LogScanner - Pilot Logbook Converter",
+  "short_name": "LogScanner",
+  "description": "Convert handwritten pilot logbooks to ForeFlight-compatible CSV files using AI-powered OCR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e40af",
+  "theme_color": "#1e40af",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "screenshots": [],
+  "features": [
+    "Camera capture",
+    "OCR text extraction",
+    "CSV export",
+    "ForeFlight compatibility"
+  ]
+}

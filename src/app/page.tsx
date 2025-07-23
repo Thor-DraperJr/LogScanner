@@ -1,103 +1,127 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import { Camera, FileText, Download, Plane } from 'lucide-react';
+import CameraCapture from '@/components/camera/CameraCapture';
+import DataReview from '@/components/data-review/DataReview';
+import type { FlightLogEntry } from '@/types/logbook';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [currentStep, setCurrentStep] = useState<'capture' | 'review' | 'export'>('capture');
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [extractedData, setExtractedData] = useState<FlightLogEntry[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleImageCapture = (imageData: string) => {
+    setCapturedImage(imageData);
+    setCurrentStep('review');
+  };
+
+  const handleDataConfirm = (data: FlightLogEntry[]) => {
+    setExtractedData(data);
+    setCurrentStep('export');
+  };
+
+  const resetFlow = () => {
+    setCurrentStep('capture');
+    setCapturedImage(null);
+    setExtractedData([]);
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <div className="flex items-center justify-center gap-2 text-blue-600">
+          <Plane className="h-8 w-8" />
+          <h1 className="text-2xl font-bold">LogScanner</h1>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        <p className="text-gray-600 text-sm">
+          Convert handwritten logbooks to ForeFlight CSV
+        </p>
+      </div>
+
+      {/* Progress Steps */}
+      <div className="flex justify-center space-x-4">
+        {[
+          { key: 'capture', icon: Camera, label: 'Capture' },
+          { key: 'review', icon: FileText, label: 'Review' },
+          { key: 'export', icon: Download, label: 'Export' },
+        ].map(({ key, icon: Icon, label }) => (
+          <div
+            key={key}
+            className={`flex flex-col items-center space-y-1 ${
+              currentStep === key
+                ? 'text-blue-600'
+                : key === 'review' && currentStep === 'export'
+                ? 'text-green-600'
+                : key === 'capture' && (currentStep === 'review' || currentStep === 'export')
+                ? 'text-green-600'
+                : 'text-gray-400'
+            }`}
+          >
+            <div
+              className={`p-3 rounded-full border-2 ${
+                currentStep === key
+                  ? 'border-blue-600 bg-blue-50'
+                  : key === 'review' && currentStep === 'export'
+                  ? 'border-green-600 bg-green-50'
+                  : key === 'capture' && (currentStep === 'review' || currentStep === 'export')
+                  ? 'border-green-600 bg-green-50'
+                  : 'border-gray-300 bg-gray-50'
+              }`}
+            >
+              <Icon className="h-5 w-5" />
+            </div>
+            <span className="text-xs font-medium">{label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Content */}
+      <div className="bg-white rounded-lg shadow-sm border p-6">
+        {currentStep === 'capture' && (
+          <CameraCapture onImageCapture={handleImageCapture} />
+        )}
+
+        {currentStep === 'review' && capturedImage && (
+          <DataReview
+            imageData={capturedImage}
+            onDataConfirm={handleDataConfirm}
+            onBack={() => setCurrentStep('capture')}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        )}
+
+        {currentStep === 'export' && extractedData.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold text-center">Export Complete!</h2>
+            <p className="text-gray-600 text-center text-sm">
+              Your logbook data has been processed and is ready for download.
+            </p>
+            <div className="flex flex-col space-y-3">
+              <button
+                onClick={() => {
+                  // CSV download is handled in DataReview component
+                  console.log('Download CSV', extractedData);
+                }}
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                Download CSV for ForeFlight
+              </button>
+              <button
+                onClick={resetFlow}
+                className="w-full bg-gray-200 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+              >
+                Scan Another Page
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="text-center text-xs text-gray-500">
+        <p>Secure processing • No data stored • Privacy first</p>
+      </div>
     </div>
   );
 }
