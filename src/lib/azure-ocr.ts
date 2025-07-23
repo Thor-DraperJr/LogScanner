@@ -33,7 +33,7 @@ export async function processImageOCR(imageData: string): Promise<OCRResponse> {
       headers: {
         'Ocp-Apim-Subscription-Key': client.key,
         'Content-Type': 'application/octet-stream',
-      },
+      } as HeadersInit,
       body: bytes,
     });
     
@@ -58,7 +58,7 @@ export async function processImageOCR(imageData: string): Promise<OCRResponse> {
       const resultResponse = await fetch(operationLocation, {
         headers: {
           'Ocp-Apim-Subscription-Key': client.key,
-        },
+        } as HeadersInit,
       });
       
       if (!resultResponse.ok) {
