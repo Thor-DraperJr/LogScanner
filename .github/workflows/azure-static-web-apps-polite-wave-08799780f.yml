@@ -33,8 +33,8 @@ jobs:
         run: npm run build
         env:
           # Azure Computer Vision credentials will be set in GitHub Secrets
-          NEXT_PUBLIC_AZURE_COMPUTER_VISION_ENDPOINT: ${{ secrets.AZURE_COMPUTER_VISION_ENDPOINT }}
-          NEXT_PUBLIC_AZURE_COMPUTER_VISION_KEY: ${{ secrets.AZURE_COMPUTER_VISION_KEY }}
+          NEXT_PUBLIC_AZURE_COMPUTER_VISION_ENDPOINT: ${{ secrets.NEXT_PUBLIC_AZURE_COMPUTER_VISION_ENDPOINT }}
+          NEXT_PUBLIC_AZURE_COMPUTER_VISION_KEY: ${{ secrets.NEXT_PUBLIC_AZURE_COMPUTER_VISION_KEY }}
           NEXT_PUBLIC_APP_ENV: production
       
       - name: Build And Deploy
