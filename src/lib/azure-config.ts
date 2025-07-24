@@ -1,15 +1,25 @@
 // Azure configuration embedded at build time for static export
-// This file will have credentials injected during the build process
 // GitHub Secrets updated - testing deployment
+// This file reads from build-time injected credentials
 
-// Log all available environment variables for debugging
-console.log('All NEXT_PUBLIC env vars:', Object.keys(process.env).filter(key => key.startsWith('NEXT_PUBLIC_')));
-console.log('NEXT_PUBLIC_AZURE_COMPUTER_VISION_ENDPOINT:', process.env.NEXT_PUBLIC_AZURE_COMPUTER_VISION_ENDPOINT);
-console.log('NEXT_PUBLIC_AZURE_COMPUTER_VISION_KEY:', process.env.NEXT_PUBLIC_AZURE_COMPUTER_VISION_KEY ? 'SET' : 'NOT_SET');
+let credentials: { endpoint: string; key: string } | null = null;
+
+// Try to load credentials from build-time injected file
+try {
+  credentials = require('./azure-credentials.json');
+  console.log('✅ Loaded Azure credentials from build-time injection');
+} catch (error) {
+  console.warn('⚠️ Could not load build-time credentials, falling back to env vars');
+  console.warn('Error:', error.message);
+}
+
+// Fallback to environment variables if injection failed
+const fallbackEndpoint = process.env.NEXT_PUBLIC_AZURE_COMPUTER_VISION_ENDPOINT;
+const fallbackKey = process.env.NEXT_PUBLIC_AZURE_COMPUTER_VISION_KEY;
 
 export const azureConfig = {
-  endpoint: process.env.NEXT_PUBLIC_AZURE_COMPUTER_VISION_ENDPOINT,
-  key: process.env.NEXT_PUBLIC_AZURE_COMPUTER_VISION_KEY,
+  endpoint: credentials?.endpoint || fallbackEndpoint,
+  key: credentials?.key || fallbackKey,
 } as const;
 
 // Validation function
@@ -19,7 +29,12 @@ export function validateAzureConfig() {
     hasKey: !!azureConfig.key,
     endpoint: azureConfig.endpoint,
     keyLength: azureConfig.key?.length || 0,
-    envVars: Object.keys(process.env).filter(key => key.includes('AZURE'))
+    source: credentials ? 'build-time-injection' : 'environment-variables',
+    credentialsLoaded: !!credentials,
+    envVarsAvailable: {
+      endpoint: !!fallbackEndpoint,
+      key: !!fallbackKey
+    }
   });
 
   // Return false if credentials are missing - this will prevent API calls

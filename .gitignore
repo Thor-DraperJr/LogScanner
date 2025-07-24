@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# Azure credentials (injected at build time)
+src/lib/azure-credentials.json
+
 # vercel
 .vercel
 
