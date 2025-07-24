@@ -6,11 +6,12 @@ let credentials: { endpoint: string; key: string } | null = null;
 
 // Try to load credentials from build-time injected file
 try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   credentials = require('./azure-credentials.json');
   console.log('✅ Loaded Azure credentials from build-time injection');
 } catch (error) {
   console.warn('⚠️ Could not load build-time credentials, falling back to env vars');
-  console.warn('Error:', error.message);
+  console.warn('Error:', (error as Error).message);
 }
 
 // Fallback to environment variables if injection failed
