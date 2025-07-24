@@ -35,8 +35,8 @@ export default function CameraCapture({ onImageCapture }: CameraCaptureProps) {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-lg font-semibold mb-2">Capture Logbook Page</h2>
-        <p className="text-gray-600 text-sm">
+        <h2 className="text-2xl font-bold text-gray-900 mb-3">Capture Logbook Page</h2>
+        <p className="text-gray-800 text-lg font-medium">
           Take a clear photo of your handwritten logbook page for best OCR results.
         </p>
       </div>
@@ -45,12 +45,12 @@ export default function CameraCapture({ onImageCapture }: CameraCaptureProps) {
         <div className="text-center space-y-4">
           <Camera className="h-16 w-16 text-gray-400 mx-auto" />
           
-          <div className="space-y-2">
-            <h3 className="font-medium text-gray-900">Ready to scan</h3>
-            <p className="text-sm text-gray-500">
+          <div className="space-y-3">
+            <h3 className="text-xl font-bold text-gray-900">Ready to scan</h3>
+            <p className="text-lg font-semibold text-gray-800">
               For best results:
             </p>
-            <ul className="text-xs text-gray-500 space-y-1">
+            <ul className="text-base font-medium text-gray-700 space-y-2">
               <li>• Use good lighting</li>
               <li>• Keep camera steady</li>
               <li>• Ensure text is clearly visible</li>

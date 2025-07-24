@@ -30,12 +30,12 @@ export default function Home() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center space-y-2">
-        <div className="flex items-center justify-center gap-2 text-blue-600">
-          <Plane className="h-8 w-8" />
-          <h1 className="text-2xl font-bold">LogScanner</h1>
+      <div className="text-center space-y-3">
+        <div className="flex items-center justify-center gap-3 text-blue-600">
+          <Plane className="h-10 w-10" />
+          <h1 className="text-4xl font-bold">LogScanner</h1>
         </div>
-        <p className="text-gray-600 text-sm">
+        <p className="text-gray-800 text-lg font-semibold">
           Convert handwritten logbooks to ForeFlight CSV
         </p>
       </div>

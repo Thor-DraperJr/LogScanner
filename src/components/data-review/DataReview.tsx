@@ -141,8 +141,8 @@ export default function DataReview({ imageData, onDataConfirm, onBack }: DataRev
             <ChevronLeft className="h-6 w-6" />
           </button>
           <div>
-            <h2 className="text-xl font-bold text-gray-800">Review Extracted Data</h2>
-            <p className="text-sm text-gray-600">Edit any incorrect information before exporting</p>
+            <h2 className="text-2xl font-bold text-gray-900">Review Extracted Data</h2>
+            <p className="text-lg font-semibold text-gray-800">Edit any incorrect information before exporting</p>
           </div>
         </div>
         <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -183,69 +183,69 @@ export default function DataReview({ imageData, onDataConfirm, onBack }: DataRev
                 
                 <div className="grid grid-cols-1 gap-6">
                   <div>
-                    <label className="block text-gray-800 font-semibold text-lg mb-2">Date</label>
+                    <label className="block text-gray-900 font-bold text-xl mb-3">Date</label>
                     <input
                       type="date"
                       value={entry.date}
                       onChange={(e) => updateEntry(index, 'date', e.target.value)}
-                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
+                      className="w-full p-5 border-3 border-gray-600 rounded-xl text-2xl text-gray-900 font-bold focus:border-blue-600 focus:ring-4 focus:ring-blue-200 transition-colors bg-white"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-gray-800 font-semibold text-lg mb-2">Aircraft ID</label>
+                    <label className="block text-gray-900 font-bold text-xl mb-3">Aircraft ID</label>
                     <input
                       type="text"
                       value={entry.aircraftId}
                       onChange={(e) => updateEntry(index, 'aircraftId', e.target.value)}
-                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
+                      className="w-full p-5 border-3 border-gray-600 rounded-xl text-2xl text-gray-900 font-bold focus:border-blue-600 focus:ring-4 focus:ring-blue-200 transition-colors bg-white"
                       placeholder="N12345"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-gray-800 font-semibold text-lg mb-2">Aircraft Type</label>
+                    <label className="block text-gray-900 font-bold text-xl mb-3">Aircraft Type</label>
                     <input
                       type="text"
                       value={entry.aircraftType}
                       onChange={(e) => updateEntry(index, 'aircraftType', e.target.value)}
-                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
+                      className="w-full p-5 border-3 border-gray-600 rounded-xl text-2xl text-gray-900 font-bold focus:border-blue-600 focus:ring-4 focus:ring-blue-200 transition-colors bg-white"
                       placeholder="C172, PA28, etc."
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-gray-800 font-semibold text-lg mb-2">Route</label>
+                    <label className="block text-gray-900 font-bold text-xl mb-3">Route</label>
                     <input
                       type="text"
                       value={entry.route}
                       onChange={(e) => updateEntry(index, 'route', e.target.value)}
-                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
+                      className="w-full p-5 border-3 border-gray-600 rounded-xl text-2xl text-gray-900 font-bold focus:border-blue-600 focus:ring-4 focus:ring-blue-200 transition-colors bg-white"
                       placeholder="KPAO-KSQL"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-gray-800 font-semibold text-lg mb-2">Total Time (hours)</label>
+                    <label className="block text-gray-900 font-bold text-xl mb-3">Total Time (hours)</label>
                     <input
                       type="number"
                       step="0.1"
                       min="0"
                       value={entry.totalTime}
                       onChange={(e) => updateEntry(index, 'totalTime', parseFloat(e.target.value) || 0)}
-                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
+                      className="w-full p-5 border-3 border-gray-600 rounded-xl text-2xl text-gray-900 font-bold focus:border-blue-600 focus:ring-4 focus:ring-blue-200 transition-colors bg-white"
                       placeholder="1.5"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-gray-800 font-semibold text-lg mb-2">Landings</label>
+                    <label className="block text-gray-900 font-bold text-xl mb-3">Landings</label>
                     <input
                       type="number"
                       min="0"
                       value={entry.landings}
                       onChange={(e) => updateEntry(index, 'landings', parseInt(e.target.value) || 0)}
-                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
+                      className="w-full p-5 border-3 border-gray-600 rounded-xl text-2xl text-gray-900 font-bold focus:border-blue-600 focus:ring-4 focus:ring-blue-200 transition-colors bg-white"
                       placeholder="1"
                     />
                   </div>
