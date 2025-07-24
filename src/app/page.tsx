@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Camera, FileText, Download, Plane } from 'lucide-react';
 import CameraCapture from '@/components/camera/CameraCapture';
 import DataReview from '@/components/data-review/DataReview';
-import DebugInfo from '@/components/DebugInfo';
 import type { FlightLogEntry } from '@/types/logbook';
 
 export default function Home() {
@@ -77,9 +76,6 @@ export default function Home() {
           </div>
         ))}
       </div>
-
-      {/* Debug Information (temporary) */}
-      <DebugInfo />
 
       {/* Content */}
       <div className="bg-white rounded-lg shadow-sm border p-6">

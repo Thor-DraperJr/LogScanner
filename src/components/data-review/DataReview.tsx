@@ -131,115 +131,140 @@ export default function DataReview({ imageData, onDataConfirm, onBack }: DataRev
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 p-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <button onClick={onBack} className="p-2 hover:bg-gray-100 rounded">
-            <ChevronLeft className="h-5 w-5" />
+        <div className="flex items-center space-x-3">
+          <button 
+            onClick={onBack} 
+            className="p-3 hover:bg-gray-100 rounded-xl transition-colors"
+          >
+            <ChevronLeft className="h-6 w-6" />
           </button>
-          <h2 className="text-lg font-semibold">Review Extracted Data</h2>
+          <div>
+            <h2 className="text-xl font-bold text-gray-800">Review Extracted Data</h2>
+            <p className="text-sm text-gray-600">Edit any incorrect information before exporting</p>
+          </div>
         </div>
-        <span className="text-sm text-gray-500">
+        <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
           {extractedData.length} entries found
-        </span>
+        </div>
       </div>
 
       {extractedData.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-gray-600">No flight entries detected in the image.</p>
+        <div className="text-center py-12 bg-gray-50 rounded-xl">
+          <div className="text-gray-400 mb-4">
+            <svg className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">No flight entries detected</h3>
+          <p className="text-gray-600 mb-6">Try taking a clearer photo with better lighting, or ensure the logbook entries are clearly visible.</p>
           <button
             onClick={onBack}
-            className="mt-4 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+            className="bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 transition-colors font-semibold"
           >
             Try Different Image
           </button>
         </div>
       ) : (
         <>
-          <div className="space-y-3 max-h-96 overflow-y-auto">
+          <div className="space-y-4 max-h-96 overflow-y-auto">
             {extractedData.map((entry, index) => (
-              <div key={entry.id} className="border rounded-lg p-3 bg-gray-50">
-                <div className="grid grid-cols-2 gap-2 text-sm">
+              <div key={entry.id} className="border-2 border-gray-200 rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="font-semibold text-gray-800 text-lg">Flight Entry {index + 1}</h3>
+                  <button
+                    onClick={() => removeEntry(index)}
+                    className="text-red-500 hover:text-red-700 text-sm font-medium px-2 py-1 rounded hover:bg-red-50 transition-colors"
+                  >
+                    Remove
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-gray-600 text-xs">Date</label>
+                    <label className="block text-gray-700 font-medium text-sm mb-1">Date</label>
                     <input
                       type="date"
                       value={entry.date}
                       onChange={(e) => updateEntry(index, 'date', e.target.value)}
-                      className="w-full p-1 border rounded text-sm"
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
                     />
                   </div>
+                  
                   <div>
-                    <label className="text-gray-600 text-xs">Aircraft ID</label>
+                    <label className="block text-gray-700 font-medium text-sm mb-1">Aircraft ID</label>
                     <input
                       type="text"
                       value={entry.aircraftId}
                       onChange={(e) => updateEntry(index, 'aircraftId', e.target.value)}
-                      className="w-full p-1 border rounded text-sm"
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
                       placeholder="N12345"
                     />
                   </div>
+                  
                   <div>
-                    <label className="text-gray-600 text-xs">Type</label>
+                    <label className="block text-gray-700 font-medium text-sm mb-1">Aircraft Type</label>
                     <input
                       type="text"
                       value={entry.aircraftType}
                       onChange={(e) => updateEntry(index, 'aircraftType', e.target.value)}
-                      className="w-full p-1 border rounded text-sm"
-                      placeholder="C172"
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                      placeholder="C172, PA28, etc."
                     />
                   </div>
+                  
                   <div>
-                    <label className="text-gray-600 text-xs">Route</label>
+                    <label className="block text-gray-700 font-medium text-sm mb-1">Route</label>
                     <input
                       type="text"
                       value={entry.route}
                       onChange={(e) => updateEntry(index, 'route', e.target.value)}
-                      className="w-full p-1 border rounded text-sm"
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
                       placeholder="KPAO-KSQL"
                     />
                   </div>
+                  
                   <div>
-                    <label className="text-gray-600 text-xs">Total Time</label>
+                    <label className="block text-gray-700 font-medium text-sm mb-1">Total Time (hours)</label>
                     <input
                       type="number"
                       step="0.1"
+                      min="0"
                       value={entry.totalTime}
                       onChange={(e) => updateEntry(index, 'totalTime', parseFloat(e.target.value) || 0)}
-                      className="w-full p-1 border rounded text-sm"
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                      placeholder="1.5"
                     />
                   </div>
+                  
                   <div>
-                    <label className="text-gray-600 text-xs">Landings</label>
+                    <label className="block text-gray-700 font-medium text-sm mb-1">Landings</label>
                     <input
                       type="number"
+                      min="0"
                       value={entry.landings}
                       onChange={(e) => updateEntry(index, 'landings', parseInt(e.target.value) || 0)}
-                      className="w-full p-1 border rounded text-sm"
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                      placeholder="1"
                     />
                   </div>
                 </div>
-                <button
-                  onClick={() => removeEntry(index)}
-                  className="mt-2 text-red-600 text-xs hover:text-red-800"
-                >
-                  Remove Entry
-                </button>
               </div>
             ))}
           </div>
 
-          <div className="flex space-x-3">
+          <div className="flex flex-col sm:flex-row gap-3 mt-6">
             <button
               onClick={handleDownload}
-              className="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center space-x-2"
+              className="flex-1 bg-green-600 text-white py-4 px-6 rounded-xl hover:bg-green-700 transition-colors font-semibold text-lg flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
             >
-              <Download className="h-4 w-4" />
+              <Download className="h-5 w-5" />
               <span>Download CSV</span>
             </button>
             <button
               onClick={handleConfirm}
-              className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="flex-1 bg-blue-600 text-white py-4 px-6 rounded-xl hover:bg-blue-700 transition-colors font-semibold text-lg shadow-lg hover:shadow-xl"
             >
               Confirm & Continue
             </button>
