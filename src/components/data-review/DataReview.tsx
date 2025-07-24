@@ -181,71 +181,71 @@ export default function DataReview({ imageData, onDataConfirm, onBack }: DataRev
                   </button>
                 </div>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-6">
                   <div>
-                    <label className="block text-gray-700 font-medium text-sm mb-1">Date</label>
+                    <label className="block text-gray-800 font-semibold text-lg mb-2">Date</label>
                     <input
                       type="date"
                       value={entry.date}
                       onChange={(e) => updateEntry(index, 'date', e.target.value)}
-                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-gray-700 font-medium text-sm mb-1">Aircraft ID</label>
+                    <label className="block text-gray-800 font-semibold text-lg mb-2">Aircraft ID</label>
                     <input
                       type="text"
                       value={entry.aircraftId}
                       onChange={(e) => updateEntry(index, 'aircraftId', e.target.value)}
-                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
                       placeholder="N12345"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-gray-700 font-medium text-sm mb-1">Aircraft Type</label>
+                    <label className="block text-gray-800 font-semibold text-lg mb-2">Aircraft Type</label>
                     <input
                       type="text"
                       value={entry.aircraftType}
                       onChange={(e) => updateEntry(index, 'aircraftType', e.target.value)}
-                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
                       placeholder="C172, PA28, etc."
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-gray-700 font-medium text-sm mb-1">Route</label>
+                    <label className="block text-gray-800 font-semibold text-lg mb-2">Route</label>
                     <input
                       type="text"
                       value={entry.route}
                       onChange={(e) => updateEntry(index, 'route', e.target.value)}
-                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
                       placeholder="KPAO-KSQL"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-gray-700 font-medium text-sm mb-1">Total Time (hours)</label>
+                    <label className="block text-gray-800 font-semibold text-lg mb-2">Total Time (hours)</label>
                     <input
                       type="number"
                       step="0.1"
                       min="0"
                       value={entry.totalTime}
                       onChange={(e) => updateEntry(index, 'totalTime', parseFloat(e.target.value) || 0)}
-                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
                       placeholder="1.5"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-gray-700 font-medium text-sm mb-1">Landings</label>
+                    <label className="block text-gray-800 font-semibold text-lg mb-2">Landings</label>
                     <input
                       type="number"
                       min="0"
                       value={entry.landings}
                       onChange={(e) => updateEntry(index, 'landings', parseInt(e.target.value) || 0)}
-                      className="w-full p-3 border-2 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                      className="w-full p-4 border-2 border-gray-400 rounded-xl text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-colors font-medium"
                       placeholder="1"
                     />
                   </div>
