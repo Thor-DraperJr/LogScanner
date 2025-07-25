@@ -94,6 +94,7 @@ export async function processImageOCR(imageData: string): Promise<OCRResponse> {
       results: ocrResults,
       rawText: rawText.trim(),
       processing: false,
+      structuredData: result.analyzeResult, // Pass structured data for enhanced parsing
     };
     
   } catch (error) {
@@ -108,7 +109,18 @@ export async function processImageOCR(imageData: string): Promise<OCRResponse> {
 }
 
 // Parse logbook data from OCR text with improved structure understanding
-export function parseLogbookData(ocrText: string): Partial<import('@/types/logbook').FlightLogEntry>[] {
+export function parseLogbookData(ocrText: string, structuredData?: any): Partial<import('@/types/logbook').FlightLogEntry>[] {
+  // Try structured parsing first if we have bounding box data
+  if (structuredData?.readResults) {
+    console.log('🎯 Using structured parsing with bounding box data');
+    const structuredEntries = parseLogbookWithStructuralAwareness(structuredData);
+    if (structuredEntries.length > 0) {
+      return structuredEntries;
+    }
+  }
+  
+  // Fall back to text-based parsing
+  console.log('📝 Using text-based parsing');
   const lines = ocrText.split('\n').filter(line => line.trim());
   const entries: Partial<import('@/types/logbook').FlightLogEntry>[] = [];
   
@@ -128,6 +140,171 @@ export function parseLogbookData(ocrText: string): Partial<import('@/types/logbo
   
   console.log(`📊 Total entries parsed: ${entries.length}`);
   return entries;
+}
+
+// Enhanced structural parsing using bounding box data
+function parseLogbookWithStructuralAwareness(ocrResult: any): Partial<import('@/types/logbook').FlightLogEntry>[] {
+  const entries: Partial<import('@/types/logbook').FlightLogEntry>[] = [];
+  
+  for (const page of ocrResult.readResults || []) {
+    const lines = page.lines || [];
+    
+    // Sort lines by vertical position (top to bottom) to process rows
+    const sortedLines = lines.sort((a: any, b: any) => a.boundingBox[1] - b.boundingBox[1]);
+    
+    // Group lines that are roughly at the same vertical level (same row)
+    const rows = groupLinesByRow(sortedLines);
+    
+    for (const row of rows) {
+      const entry = parseLogbookRow(row);
+      if (entry && Object.keys(entry).length > 1) {
+        entries.push(entry);
+      }
+    }
+  }
+  
+  console.log(`🎯 Structured parsing found ${entries.length} entries`);
+  return entries;
+}
+
+// Group lines that appear to be in the same row
+function groupLinesByRow(lines: any[]): any[][] {
+  const rows: any[][] = [];
+  const rowThreshold = 20; // Pixels - adjust based on typical line height
+  
+  for (const line of lines) {
+    const lineY = line.boundingBox[1]; // Top Y coordinate
+    
+    // Find existing row that this line belongs to
+    const existingRow = rows.find(row => {
+      const rowY = row[0].boundingBox[1];
+      return Math.abs(lineY - rowY) < rowThreshold;
+    });
+    
+    if (existingRow) {
+      existingRow.push(line);
+    } else {
+      rows.push([line]);
+    }
+  }
+  
+  // Sort each row by X position (left to right)
+  rows.forEach(row => {
+    row.sort((a, b) => a.boundingBox[0] - b.boundingBox[0]);
+  });
+  
+  return rows;
+}
+
+// Parse a single row of logbook data using column positions
+function parseLogbookRow(rowLines: any[]): Partial<import('@/types/logbook').FlightLogEntry> | null {
+  const entry: Partial<import('@/types/logbook').FlightLogEntry> = {};
+  
+  // Analyze each word/line in the row based on its X position
+  for (const line of rowLines) {
+    const x = line.boundingBox[0]; // Left X coordinate
+    const text = line.text.trim();
+    const words = line.words || [{ text, boundingBox: line.boundingBox }];
+    
+    for (const word of words) {
+      const wordX = word.boundingBox[0];
+      const wordText = word.text.trim();
+      
+      // Column detection based on typical logbook layout
+      // These thresholds may need adjustment based on your specific logbook format
+      
+      // Column 1: Date (leftmost, typically x < 200)
+      if (wordX < 200) {
+        const dateMatch = wordText.match(/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/);
+        if (dateMatch) {
+          entry.date = formatLogbookDate(wordText);
+        }
+      }
+      
+      // Column 2-3: Aircraft info (x 200-500)
+      else if (wordX >= 200 && wordX < 500) {
+        if (/^N\d+[A-Z]*$/i.test(wordText)) {
+          entry.aircraftId = wordText.toUpperCase();
+        } else if (/^(C|PA|SR|DA|BE)\w*\d+$/i.test(wordText)) {
+          entry.aircraftType = normalizeAircraftType(wordText);
+        }
+      }
+      
+      // Column 4: Route (x 500-700)
+      else if (wordX >= 500 && wordX < 700) {
+        if (/^[A-Z]{3,4}$/i.test(wordText)) {
+          if (!entry.route) {
+            entry.route = wordText.toUpperCase();
+          } else if (!entry.route.includes('-')) {
+            entry.route = `${entry.route}-${wordText.toUpperCase()}`;
+          }
+        }
+      }
+      
+      // Column 5+: Times and numbers (x > 700)
+      else if (wordX >= 700) {
+        const num = parseFloat(wordText);
+        if (!isNaN(num)) {
+          // Distinguish between flight times and landings
+          if (num >= 0.1 && num <= 20.0 && wordText.includes('.')) {
+            // Likely flight time (decimal hours)
+            if (!entry.totalTime) {
+              entry.totalTime = num;
+            } else if (!entry.picTime) {
+              entry.picTime = num;
+            } else if (!entry.dualTime) {
+              entry.dualTime = num;
+            }
+          } else if (Number.isInteger(num) && num >= 1 && num <= 50) {
+            // Likely landings (whole number)
+            if (!entry.landings) {
+              entry.landings = num;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  return Object.keys(entry).length > 1 ? entry : null;
+}
+
+// Helper function to format dates consistently
+function formatLogbookDate(dateText: string): string {
+  const dateMatch = dateText.match(/(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?/);
+  if (!dateMatch) return dateText;
+  
+  const month = dateMatch[1].padStart(2, '0');
+  const day = dateMatch[2].padStart(2, '0');
+  let year = dateMatch[3];
+  
+  if (!year) {
+    // Assume current year if no year specified
+    year = new Date().getFullYear().toString();
+  } else if (year.length === 2) {
+    // Convert 2-digit year to 4-digit
+    const yearNum = parseInt(year);
+    year = (yearNum > 50 ? '19' : '20') + year;
+  }
+  
+  return `${year}-${month}-${day}`;
+}
+
+// Helper function to normalize aircraft types
+function normalizeAircraftType(aircraftText: string): string {
+  const normalized = aircraftText.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  
+  // Common aircraft type mappings
+  const typeMap: { [key: string]: string } = {
+    'CESSNA172': 'C172',
+    'CESSNA152': 'C152',
+    'CESSNA182': 'C182',
+    'PIPER28': 'PA28',
+    'PIPERPA28': 'PA28',
+    'PIPERCHEROKEE': 'PA28',
+  };
+  
+  return typeMap[normalized] || normalized;
 }
 
 // Enhanced parsing with better logbook structure understanding

@@ -29,7 +29,7 @@ export default function DataReview({ imageData, onDataConfirm, onBack }: DataRev
         return;
       }
 
-      const parsedData = parseLogbookData(ocrResult.rawText);
+      const parsedData = parseLogbookData(ocrResult.rawText, ocrResult.structuredData);
       const entriesWithIds = parsedData.map((entry, index) => ({
         id: `entry-${index}`,
         date: entry.date || '',
